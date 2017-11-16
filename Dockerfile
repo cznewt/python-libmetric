@@ -1,6 +1,6 @@
-FROM python:2.7-jessie
+FROM python:2.7-slim-jessie
 
-RUN apt-get update && apt-get -y install build-dep python-lxml
+RUN apt-get update && apt-get -y install python-lxml
 RUN pip install libmetric
 
 ENTRYPOINT ["instant_alarm"]

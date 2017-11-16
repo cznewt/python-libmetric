@@ -17,7 +17,7 @@ Install the required dependencies on Debian based systems.
 
 .. code-block:: bash
 
-    apt-get -y install build-dep python-lxml
+    apt-get -y install python-lxml
 
 Intall library from ``pip`` package.
 

@@ -1,12 +1,19 @@
 from setuptools import setup, find_packages
 
-version = '0.1.0'
+VERSION = '0.3.0'
+
+with open('README.rst') as readme:
+    LONG_DESCRIPTION = ''.join(readme.readlines())
+
 
 setup(
     name='libmetric',
-    version=version,
+    version=VERSION,
     description='Python library for querying metrics into Pandas DataFrames',
+    long_description=LONG_DESCRIPTION,
     packages=find_packages(),
+    license='Apache License, Version 2.0',
+    url='https://github.com/cznewt/python-libmetric',
     install_requires=[
         'click',
         'requests',
