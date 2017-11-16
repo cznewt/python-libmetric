@@ -19,13 +19,13 @@ Install the required dependencies on Debian based systems.
 
     apt-get -y install python-lxml
 
-Intall library from ``pip`` package.
+Install library from ``pip`` package.
 
 .. code-block:: bash
 
     pip install libmetric
 
-Intall library from source.
+Install library from source.
 
 .. code-block:: bash
 
