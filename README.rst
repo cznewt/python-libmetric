@@ -45,7 +45,7 @@ For example passing the parameters as environmental parameters.
 .. code-block:: bash
 
     export LIBMETRIC_ENGINE='prometheus'
-    export LIBMETRIC_URL='https://metric01:15010'
+    export LIBMETRIC_URL='https://metric01:9090'
     export LIBMETRIC_QUERY='alertmanager_notifications_total'
 
     export LIBMETRIC_START='2017-11-12T00:00:00Z'
@@ -58,15 +58,7 @@ And the example of passing parameters as command arguments.
 
 .. code-block:: bash
 
-    export LIBMETRIC_ENGINE='prometheus'
-    export LIBMETRIC_URL='https://metric01:15010'
-    export LIBMETRIC_QUERY='alertmanager_notifications_total'
-
-    export LIBMETRIC_START='2017-11-12T00:00:00Z'
-    export LIBMETRIC_END='2017-11-16T00:00:00Z'
-    export LIBMETRIC_STEP='3600s'
-
-    range_meter
+    range_meter --engine prometheus --url 'https://metric01:9090' --query '...'
 
 
 Common Parameters
@@ -83,6 +75,7 @@ Common Parameters
 
 **LIBMETRIC_QUERY**
   Query to get the metric time-series or value.
+
 
 
 Range Parameters
@@ -119,13 +112,43 @@ results in normalised way. The endpoints are queried thru HTTP API calls.
 Graphite
 --------
 
+Example configuration to query the Graphite server.
 
-InfluxDB
+.. code-block:: bash
+
+    export LIBMETRIC_ENGINE='graphite'
+    export LIBMETRIC_URL='http://graphite.host:80'
+    export LIBMETRIC_QUERY='averageSeries(server.web*.load)'
+    ...
+
+
+InfluxDb
 --------
+
+Example configuration to query the InfluxDb server.
+
+.. code-block:: bash
+
+    export LIBMETRIC_ENGINE='influxdb'
+    export LIBMETRIC_URL='http://influxdb.host:8086'
+    export LIBMETRIC_USER='user'
+    export LIBMETRIC_PASSWORD='password'
+    export LIBMETRIC_PARTITION='prometheus'
+    export LIBMETRIC_QUERY='SELECT mean("value") FROM "alertmanager_notifications_total"'
+    ...
 
 
 Prometheus
 ----------
+
+Example configuration to query the Prometheus server.
+
+.. code-block:: bash
+
+    export LIBMETRIC_ENGINE='prometheus'
+    export LIBMETRIC_URL='https://prometheus.host:9090'
+    export LIBMETRIC_QUERY='alertmanager_notifications_total'
+    ...
 
 
 More Information

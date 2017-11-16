@@ -2,7 +2,8 @@
 
 import click
 from libmetric.query import PrometheusRangeQuery, PrometheusInstantQuery, \
-    GraphiteRangeQuery, GraphiteInstantQuery 
+    GraphiteRangeQuery, GraphiteInstantQuery, InfluxRangeQuery, \
+    InfluxInstantQuery
 
 
 @click.command()
@@ -10,6 +11,10 @@ from libmetric.query import PrometheusRangeQuery, PrometheusInstantQuery, \
               help="Engine [prometheus, elasticsearch, influxdb]")
 @click.option('--url', default=None,
               help="Server URL")
+@click.option('--user', default=None,
+              help="Authentication username")
+@click.option('--password', default=None,
+              help="Authentication password")
 @click.option('--partition', default=None,
               help="Data partition")
 @click.option('--query', default=None,
@@ -20,11 +25,13 @@ from libmetric.query import PrometheusRangeQuery, PrometheusInstantQuery, \
               help="Time range end")
 @click.option('--step', default=None,
               help="Query resolution step width")
-def _range_meter(engine, url, partition, query, start, end, step):
+def _range_meter(engine, url, user, password, partition, query, start, end, step):
 
     data = {
         'queries': [query],
         'url': url,
+        'user': user,
+        'password': password,
         'partition': partition,
         'step': step,
         'start': start,
@@ -33,6 +40,8 @@ def _range_meter(engine, url, partition, query, start, end, step):
 
     if engine == 'prometheus':
         query = PrometheusRangeQuery(**data)
+    elif engine == 'influxdb':
+        query = InfluxRangeQuery(**data)
     elif engine == 'graphite':
         query = GraphiteRangeQuery(**data)
     else:
@@ -46,23 +55,31 @@ def _range_meter(engine, url, partition, query, start, end, step):
               help="Engine [prometheus, elasticsearch, influxdb]")
 @click.option('--url', default=None,
               help="Server URL")
+@click.option('--user', default=None,
+              help="Authentication username")
+@click.option('--password', default=None,
+              help="Authentication password")
 @click.option('--partition', default=None,
               help="Data partition")
 @click.option('--query', default=None,
               help="Time-series query")
 @click.option('--moment', default=None,
               help="Moment in time")
-def _instant_meter(engine, partition, url, query, moment):
+def _instant_meter(engine, url, user, password, partition, query, moment):
 
     data = {
         'queries': [query],
         'url': url,
+        'user': user,
+        'password': password,
         'partition': partition,
         'moment': moment,
     }
 
     if engine == 'prometheus':
         query = PrometheusInstantQuery(**data)
+    elif engine == 'influxdb':
+        query = InfluxInstantQuery(**data)
     elif engine == 'graphite':
         query = GraphiteInstantQuery(**data)
     else:

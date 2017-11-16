@@ -103,7 +103,4 @@ ENV/
 # ViM swp files
 *.swp
 
-clouds.yaml
-clusters.yaml
-configs.yaml
-config.yaml
+tests/range_meter_influxdb.sh
