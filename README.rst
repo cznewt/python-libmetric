@@ -10,6 +10,7 @@ It support two types of metric queries, the first is ``instant`` metric,
 returning the value in precise moment in time. The second is the ``range``
 metric, giving you the series of values for given time range and step.
 
+
 Installation
 ============
 
@@ -75,7 +76,6 @@ Common Parameters
 
 **LIBMETRIC_QUERY**
   Query to get the metric time-series or value.
-
 
 
 Range Parameters
@@ -181,8 +181,15 @@ function.
     ...
 
 
+Alarm Options
+=============
+
+Following lists show allowed values for alarm functions, the alarm arithmetic
+operators and aggregation function for range meters.
+
+
 Supported Alarm Operators
-=========================
+-------------------------
 
 **gt**
   Greater than [>].
@@ -198,6 +205,22 @@ Supported Alarm Operators
 
 **eq**
   Equals to [==].
+
+
+Supported Time-series Aggregations
+----------------------------------
+
+**avg**
+  Average the values.
+
+**min**
+  Use the minimal value.
+
+**max**
+  Use the maximal value.
+
+**sum**
+  Sum the values.
 
 
 More Information

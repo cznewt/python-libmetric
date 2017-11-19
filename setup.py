@@ -1,10 +1,11 @@
+# -*- coding: utf-8 -*-
+
 from setuptools import setup, find_packages
 
-VERSION = '0.3.0'
+VERSION = '0.5.0'
 
 with open('README.rst') as readme:
     LONG_DESCRIPTION = ''.join(readme.readlines())
-
 
 setup(
     name='libmetric',
