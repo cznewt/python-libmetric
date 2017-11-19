@@ -11,6 +11,8 @@ setup(
     version=VERSION,
     description='Python library for querying metrics into Pandas DataFrames',
     long_description=LONG_DESCRIPTION,
+    author='Aleš Komárek',
+    author_email='ales.komarek@newt.cz',
     packages=find_packages(),
     license='Apache License, Version 2.0',
     url='https://github.com/cznewt/python-libmetric',
@@ -18,12 +20,15 @@ setup(
         'click',
         'requests',
         'pandas',
-        'numpy'
+        'numpy',
+        'python-rrdtool',
+        'elasticsearch-dsl'
     ],
     entry_points='''
 [console_scripts]
-range_meter=libmetric.cli:range_meter
-instant_meter=libmetric.cli:instant_meter
+search_metrics=libmetric.cli:search_metrics
+range_metric=libmetric.cli:range_metric
+instant_metric=libmetric.cli:instant_metric
 range_alarm=libmetric.cli:range_alarm
 instant_alarm=libmetric.cli:instant_alarm
     ''',
