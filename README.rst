@@ -118,8 +118,8 @@ Parameters that apply only for the all meters/alarms. Except the
   Aggregation function for the given time-series [min, max, sum, avg]
 
 
-Supported MetaData Endpoints
-============================
+Supported Endpoints
+===================
 
 The ``libmetric`` supports several major time-series databases to get the
 results in normalised way. The endpoints are queried thru HTTP API calls.
@@ -185,42 +185,42 @@ Alarm Options
 =============
 
 Following lists show allowed values for alarm functions, the alarm arithmetic
-operators and aggregation function for range meters.
+operators and aggregation function for ``range`` meters.
 
 
 Supported Alarm Operators
 -------------------------
 
 **gt**
-  Greater than [>].
+  Greater than ``>``.
 
 **gte**
-  Greater or equal than [>=].
+  Greater or equal than ``>=``.
 
 **lt**
-  Lower than [<].
+  Lower than ``<``.
 
 **lte**
-  Lower or equal than [<=].
+  Lower or equal than ``<=``.
 
 **eq**
-  Equals to [==].
+  Equals to ``==``.
 
 
 Supported Time-series Aggregations
 ----------------------------------
 
 **avg**
-  Average the values.
+  Arithmetic average of the series values.
 
 **min**
-  Use the minimal value.
+  Use the minimal value from series.
 
 **max**
-  Use the maximal value.
+  Use the maximal value from series.
 
 **sum**
-  Sum the values.
+  Sum the values together.
 
 
 More Information
