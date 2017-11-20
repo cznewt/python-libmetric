@@ -170,13 +170,14 @@ Example configuration to query the Prometheus server.
 Round-Robin Database
 --------------------
 
-Example configuration to query the RRD file. The query is the consolidation
-function.
+Example configuration to query the RRD file. The query is the ``consolidation
+function`` and the partition is the ``data set``.
 
 .. code-block:: bash
 
     export LIBMETRIC_ENGINE='rrd'
     export LIBMETRIC_URL='file:///tmp/port.rrd'
+    export LIBMETRIC_PARTITION='INOCTETS'
     export LIBMETRIC_QUERY='AVERAGE'
     ...
 

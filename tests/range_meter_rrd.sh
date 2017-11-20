@@ -1,6 +1,7 @@
 
 export LIBMETRIC_ENGINE='rrd'
-export LIBMETRIC_URL='file:///home/newt/Downloads/port-123.rrd'
+export LIBMETRIC_URL='file:///home/newt/Downloads/school/port-123.rrd'
+export LIBMETRIC_PARTITION='INOCTETS'
 export LIBMETRIC_QUERY='AVERAGE'
 
 export LIBMETRIC_START='2017-11-12T00:00:00Z'

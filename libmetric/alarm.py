@@ -1,42 +1,56 @@
 
 
 class InstantAlarm(object):
+
     def __init__(self, **kwargs):
         self.alarm_operator = kwargs['alarm_operator']
-        self.alarm_threshold = kwargs['alarm_threshold']
-        self.value = kwargs['value']
+        self.alarm_threshold = float(kwargs['alarm_threshold'])
+        self.data_frame = kwargs['data_frame']
+        self.series = kwargs['series']
+        self.value = self._aggregate_series()
+
+    def _aggregate_series(self):
+        return float(self.data_frame[self.series].item())
 
     def evaluate(self):
+        print "Question: {} {} {}?".format(self.alarm_threshold,
+                                           self.alarm_operator,
+                                           self.value)
+        response = False
         if self.alarm_operator == 'gt':
-            response = (self.alarm_threshold > self.value)
+            if self.alarm_threshold > self.value:
+                response = True
         elif self.alarm_operator == 'gte':
-            response = (self.alarm_threshold >= self.value)
+            if self.alarm_threshold >= self.value:
+                response = True
         elif self.alarm_operator == 'lt':
-            response = (self.alarm_threshold < self.value)
+            if self.alarm_threshold < self.value:
+                response = True
         elif self.alarm_operator == 'lte':
-            response = (self.alarm_threshold <= self.value)
+            if self.alarm_threshold <= self.value:
+                response = True
         elif self.alarm_operator == 'eq':
-            response = (self.alarm_threshold == self.value)
+            if self.alarm_threshold == self.value:
+                response = True
         return response
 
 
-class RangeAlarm(object):
+class RangeAlarm(InstantAlarm):
+
     def __init__(self, **kwargs):
         self.alarm_operator = kwargs['alarm_operator']
-        self.alarm_threshold = kwargs['alarm_threshold']
-        self.time_series = kwargs['time_series']
+        self.alarm_threshold = float(kwargs['alarm_threshold'])
+        self.data_frame = kwargs['data_frame']
         self.aggregation = kwargs['aggregation']
+        self.series = kwargs['series']
+        self.value = self._aggregate_series()
 
-    def evaluate(self):
-        self.value = self.time_series[-1]
-        if self.alarm_operator == 'gt':
-            response = (self.alarm_threshold > self.value)
-        elif self.alarm_operator == 'gte':
-            response = (self.alarm_threshold >= self.value)
-        elif self.alarm_operator == 'lt':
-            response = (self.alarm_threshold < self.value)
-        elif self.alarm_operator == 'lte':
-            response = (self.alarm_threshold <= self.value)
-        elif self.alarm_operator == 'eq':
-            response = (self.alarm_threshold == self.value)
-        return response
+    def _aggregate_series(self):
+        if self.aggregation == 'avg':
+            self.value = float(self.data_frame[self.series].mean())
+        elif self.aggregation == 'min':
+            self.value = float(self.data_frame[self.series].min())
+        elif self.aggregation == 'max':
+            self.value = float(self.data_frame[self.series].max())
+        else:
+            self.value = float(self.data_frame[self.series].sum())

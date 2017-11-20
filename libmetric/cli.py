@@ -83,10 +83,13 @@ def range_metric():
               help="Threshold value for the alarm")
 @click.option('--alarm-operator', default=None,
               help="Arithmetic operator for alarm evaluation")
+@click.option('--alarm-series', default=None,
+              help="Series to perform alarm against")
 @click.option('--aggregation', default=None,
               help="Aggregation function for the given time-series")
 def _range_alarm(engine, url, user, password, partition, query, start, end,
-                 step, alarm_operator, alarm_threshold, aggregation):
+                 step, alarm_operator, alarm_threshold, alarm_series,
+                 aggregation):
     data = {
         'queries': [query],
         'url': url,
@@ -109,15 +112,16 @@ def _range_alarm(engine, url, user, password, partition, query, start, end,
     else:
         raise Exception("Unsupported engine {}.".format(engine))
 
-    time_series = query.get()
+    data_frame = query.get()
     alarm = {
         'alarm_operator': alarm_operator,
         'alarm_threshold': alarm_threshold,
         'aggregation': aggregation,
-        'time_series': time_series
+        'series': alarm_series,
+        'data_frame': data_frame
     }
     result = RangeAlarm(**alarm).evaluate()
-    print result
+    print "Response: {}".format(result)
 
 
 def range_alarm():
@@ -180,52 +184,49 @@ def instant_metric():
               help="Data partition")
 @click.option('--query', default=None,
               help="Time-series query")
-@click.option('--start', default=None,
-              help="Time range start")
-@click.option('--end', default=None,
-              help="Time range end")
-@click.option('--step', default=None,
-              help="Query resolution step width")
+@click.option('--moment', default=None,
+              help="Moment in time")
 @click.option('--alarm-threshold', default=None,
               help="Threshold value for the alarm")
 @click.option('--alarm-operator', default=None,
               help="Arithmetic operator for alarm evaluation")
-def _instant_alarm(engine, url, user, password, partition, query, start, end,
-                   step, alarm_operator, alarm_threshold):
+@click.option('--alarm-series', default=None,
+              help="Series to perform alarm against")
+def _instant_alarm(engine, url, user, password, partition, query, moment,
+                   alarm_operator, alarm_threshold, alarm_series):
     data = {
         'queries': [query],
         'url': url,
         'user': user,
         'password': password,
         'partition': partition,
-        'step': step,
-        'start': start,
-        'end': end
+        'moment': moment,
     }
 
     if engine == 'prometheus':
-        query = PrometheusRangeQuery(**data)
+        query = PrometheusInstantQuery(**data)
     elif engine == 'influxdb':
-        query = InfluxRangeQuery(**data)
+        query = InfluxInstantQuery(**data)
     elif engine == 'graphite':
-        query = GraphiteRangeQuery(**data)
+        query = GraphiteInstantQuery(**data)
     elif engine == 'rrd':
-        query = RrdRangeQuery(**data)
+        query = RrdInstantQuery(**data)
     else:
         raise Exception("Unsupported engine {}.".format(engine))
 
-    value = query.get()
+    data_frame = query.get()
     alarm = {
         'alarm_operator': alarm_operator,
         'alarm_threshold': alarm_threshold,
-        'value': value
+        'series': alarm_series,
+        'data_frame': data_frame
     }
     result = InstantAlarm(**alarm).evaluate()
-    print result
+    print "Response: {}".format(result)
 
 
 def instant_alarm():
-    _instant_metric(auto_envvar_prefix='LIBMETRIC')
+    _instant_alarm(auto_envvar_prefix='LIBMETRIC')
 
 
 @click.command()
