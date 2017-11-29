@@ -2,7 +2,6 @@
 
 import json
 import requests
-import rrdtool
 import pandas as pd
 import numpy as np
 import datetime
@@ -14,8 +13,8 @@ class RangeQuery(object):
 
     def __init__(self, **kwargs):
         self.base_url = kwargs['url']
-        self.user = kwargs['user']
-        self.password = kwargs['password']
+        self.user = kwargs.get('user', None)
+        self.password = kwargs.get('password')
         self.queries = kwargs['queries']
         self.start = kwargs['start']
         self.end = kwargs['end']
@@ -187,10 +186,15 @@ class PrometheusRangeQuery(RangeQuery):
 
 class RrdRangeQuery(RangeQuery):
     def __init__(self, **kwargs):
+        try:
+            import rrdtool # noqa
+        except ImportError:
+            raise Exception("pip install python-rrdtool")
         super(RrdRangeQuery, self).__init__(**kwargs)
         self.url = kwargs['url']
 
     def get(self):
+        import rrdtool
         result = rrdtool.fetch(self._url(), str(self.queries[0]))
 
         start, end, step = result[0]

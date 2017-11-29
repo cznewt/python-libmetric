@@ -23,7 +23,6 @@ setup(
         'requests',
         'pandas',
         'numpy',
-        'python-rrdtool',
         'elasticsearch-dsl'
     ],
     entry_points='''
