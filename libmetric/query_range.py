@@ -158,6 +158,8 @@ class PrometheusRangeQuery(RangeQuery):
 
     def _url(self):
         url = '/api/v1/query_range'
+        if self.step:
+            return self.base_url + url + '?step=%s' % self.step
         return self.base_url + url
 
     def _process(self, response):
