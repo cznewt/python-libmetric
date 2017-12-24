@@ -2,7 +2,6 @@
 
 import json
 import requests
-import rrdtool
 import pandas as pd
 import numpy as np
 import datetime
@@ -14,8 +13,8 @@ class RangeQuery(object):
 
     def __init__(self, **kwargs):
         self.base_url = kwargs['url']
-        self.user = kwargs['user']
-        self.password = kwargs['password']
+        self.user = kwargs.get('user', None)
+        self.password = kwargs.get('password')
         self.queries = kwargs['queries']
         self.start = kwargs['start']
         self.end = kwargs['end']
@@ -70,6 +69,7 @@ class ElasticSearchRangeQuery(RangeQuery):
 
 
 class GraphiteRangeQuery(RangeQuery):
+
     def __init__(self, **kwargs):
         super(GraphiteRangeQuery, self).__init__(**kwargs)
 
@@ -102,6 +102,7 @@ class GraphiteRangeQuery(RangeQuery):
 
 
 class InfluxRangeQuery(RangeQuery):
+
     def __init__(self, **kwargs):
         super(InfluxRangeQuery, self).__init__(**kwargs)
         self.partition = kwargs['partition']
@@ -142,6 +143,7 @@ class InfluxRangeQuery(RangeQuery):
 
 
 class PrometheusRangeQuery(RangeQuery):
+
     def __init__(self, **kwargs):
         super(PrometheusRangeQuery, self).__init__(**kwargs)
 
@@ -159,6 +161,8 @@ class PrometheusRangeQuery(RangeQuery):
 
     def _url(self):
         url = '/api/v1/query_range'
+        if self.step:
+            return self.base_url + url + '?step=%s' % self.step
         return self.base_url + url
 
     def _process(self, response):
@@ -166,13 +170,18 @@ class PrometheusRangeQuery(RangeQuery):
             raise Exception(PROMETHEUS_REPLY.format(response['errorType'],
                                                     response['error']))
         data = response['data']['result']
+
         for series in data:
             for values in series['values']:
-                values[0] = pd.Timestamp(datetime.datetime.fromtimestamp(values[0]))
+                values[0] = pd.Timestamp(
+                    datetime.datetime.fromtimestamp(values[0]))
                 values[1] = float(values[1])
-        np_data = [('{}_{}'.format(series['metric']['__name__'],
-                                   series['metric']['instance']),
-                                   np.array(series['values'])) for series in data]
+
+        np_data = [('{}_{}'.format(
+            series['metric'].get('__name__', 'name'),
+            series['metric'].get('instance', 'instance')),
+            np.array(series['values'])) for series in data]
+
         series = []
         for query, serie in np_data:
             frame = pd.DataFrame(serie[:, 1],
@@ -186,11 +195,17 @@ class PrometheusRangeQuery(RangeQuery):
 
 
 class RrdRangeQuery(RangeQuery):
+
     def __init__(self, **kwargs):
+        try:
+            import rrdtool  # noqa
+        except ImportError:
+            raise Exception("pip install python-rrdtool")
         super(RrdRangeQuery, self).__init__(**kwargs)
         self.url = kwargs['url']
 
     def get(self):
+        import rrdtool
         result = rrdtool.fetch(self._url(), str(self.queries[0]))
 
         start, end, step = result[0]

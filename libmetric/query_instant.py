@@ -2,7 +2,6 @@
 
 import json
 import requests
-import rrdtool
 import pandas as pd
 import numpy as np
 import datetime
@@ -13,10 +12,10 @@ PROMETHEUS_REPLY = 'Prometheus API replied with error {}: {}'
 class InstantQuery(object):
     def __init__(self, **kwargs):
         self.base_url = kwargs['url']
-        self.user = kwargs['user']
-        self.password = kwargs['password']
+        self.user = kwargs.get('user', None)
+        self.password = kwargs.get('password', None)
         self.queries = kwargs['queries']
-        self.moment = kwargs['moment']
+        self.moment = kwargs.get('moment', None)
         self.verify = False
 
     def _process(self, data):

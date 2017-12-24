@@ -175,12 +175,38 @@ function`` and the partition is the ``data set``.
 
 .. code-block:: bash
 
+    pip install python-rrdtool
+
+
     export LIBMETRIC_ENGINE='rrd'
     export LIBMETRIC_URL='file:///tmp/port.rrd'
     export LIBMETRIC_PARTITION='INOCTETS'
     export LIBMETRIC_QUERY='AVERAGE'
     ...
 
+
+Usage from python
+-----------------
+
+.. code-block:: python
+
+    from libmetric.query_range import PrometheusRangeQuery
+
+    query = 'cpu{metric="load"}'
+
+    url = 'http://localhost:9090'
+
+    data = {
+        'queries': [query],
+        'url': url,
+        'step': step,
+        'start': start,
+        'end': end
+    }
+
+    query = PrometheusRangeQuery(**data)
+
+    print query.get()
 
 Alarm Options
 =============
