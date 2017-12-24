@@ -69,6 +69,7 @@ class ElasticSearchRangeQuery(RangeQuery):
 
 
 class GraphiteRangeQuery(RangeQuery):
+
     def __init__(self, **kwargs):
         super(GraphiteRangeQuery, self).__init__(**kwargs)
 
@@ -101,6 +102,7 @@ class GraphiteRangeQuery(RangeQuery):
 
 
 class InfluxRangeQuery(RangeQuery):
+
     def __init__(self, **kwargs):
         super(InfluxRangeQuery, self).__init__(**kwargs)
         self.partition = kwargs['partition']
@@ -141,6 +143,7 @@ class InfluxRangeQuery(RangeQuery):
 
 
 class PrometheusRangeQuery(RangeQuery):
+
     def __init__(self, **kwargs):
         super(PrometheusRangeQuery, self).__init__(**kwargs)
 
@@ -167,13 +170,18 @@ class PrometheusRangeQuery(RangeQuery):
             raise Exception(PROMETHEUS_REPLY.format(response['errorType'],
                                                     response['error']))
         data = response['data']['result']
+
         for series in data:
             for values in series['values']:
-                values[0] = pd.Timestamp(datetime.datetime.fromtimestamp(values[0]))
+                values[0] = pd.Timestamp(
+                    datetime.datetime.fromtimestamp(values[0]))
                 values[1] = float(values[1])
-        np_data = [('{}_{}'.format(series['metric']['__name__'],
-                                   series['metric']['instance']),
-                                   np.array(series['values'])) for series in data]
+
+        np_data = [('{}_{}'.format(
+            series['metric'].get('__name__', 'name'),
+            series['metric'].get('instance', 'instance')),
+            np.array(series['values'])) for series in data]
+
         series = []
         for query, serie in np_data:
             frame = pd.DataFrame(serie[:, 1],
@@ -187,9 +195,10 @@ class PrometheusRangeQuery(RangeQuery):
 
 
 class RrdRangeQuery(RangeQuery):
+
     def __init__(self, **kwargs):
         try:
-            import rrdtool # noqa
+            import rrdtool  # noqa
         except ImportError:
             raise Exception("pip install python-rrdtool")
         super(RrdRangeQuery, self).__init__(**kwargs)
