@@ -211,9 +211,9 @@ class RrdRangeQuery(RangeQuery):
         start, end, step = result[0]
         ds = result[1]
         rows = result[2]
-        print start, end, step
-        print ds
-        print rows
+        print(start, end, step)
+        print(ds)
+        print(rows)
 #        return self._process(data)
 
     def _url(self):

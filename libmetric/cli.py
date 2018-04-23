@@ -53,7 +53,7 @@ def _range_metric(engine, url, user, password, partition, query,
     else:
         raise Exception("Unsupported engine {}.".format(engine))
 
-    print query.get()
+    print(query.get())
 
 
 def range_metric():
@@ -121,7 +121,7 @@ def _range_alarm(engine, url, user, password, partition, query, start, end,
         'data_frame': data_frame
     }
     result = RangeAlarm(**alarm).evaluate()
-    print "Response: {}".format(result)
+    print("Response: {}".format(result))
 
 
 def range_alarm():
@@ -164,7 +164,7 @@ def _instant_metric(engine, url, user, password, partition, query, moment):
     else:
         raise Exception("Unsupported engine {}.".format(engine))
 
-    print query.get()
+    print(query.get())
 
 
 def instant_metric():
@@ -222,7 +222,7 @@ def _instant_alarm(engine, url, user, password, partition, query, moment,
         'data_frame': data_frame
     }
     result = InstantAlarm(**alarm).evaluate()
-    print "Response: {}".format(result)
+    print("Response: {}".format(result))
 
 
 def instant_alarm():
@@ -269,7 +269,7 @@ def _search_metrics(engine, url, user, password, partition, search,
     else:
         raise Exception("Unsupported engine {}".format(engine))
 
-    print search.get()
+    print(search.get())
 
 
 def search_metrics():
