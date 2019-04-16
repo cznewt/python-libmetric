@@ -1,8 +1,6 @@
 
 import json
 import requests
-import rrdtool
-
 
 class Search(object):
     def __init__(self, **kwargs):
@@ -73,6 +71,10 @@ class RrdSearch(Search):
         return str(self.base_url.replace('file://', ''))
 
     def get(self):
+        try:
+            import rrdtool  # noqa
+        except ImportError:
+            raise Exception("pip install python-rrdtool")
         data_sources = set()
         info = rrdtool.info(self._url())
         for datum, real_value in info.items():
