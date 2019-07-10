@@ -13,9 +13,9 @@ class InstantAlarm(object):
         return float(self.data_frame[self.series].item())
 
     def evaluate(self):
-        print "Question: {} {} {}?".format(self.alarm_threshold,
+        print("Question: {} {} {}?".format(self.alarm_threshold,
                                            self.alarm_operator,
-                                           self.value)
+                                           self.value))
         response = False
         if self.alarm_operator == 'gt':
             if self.alarm_threshold > self.value:

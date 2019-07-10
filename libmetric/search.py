@@ -60,7 +60,7 @@ class PrometheusSearch(Search):
         return self.base_url + url
 
     def _process(self, response):
-        print response
+        print(response)
 
 
 class RrdSearch(Search):
@@ -77,7 +77,7 @@ class RrdSearch(Search):
             raise Exception("pip install python-rrdtool")
         data_sources = set()
         info = rrdtool.info(self._url())
-        for datum, real_value in info.items():
+        for datum, real_value in list(info.items()):
             if datum.startswith('ds'):
                 value = datum.replace('ds[', '').split('].')
                 # if value[0] not in data_source:
