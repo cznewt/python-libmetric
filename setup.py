@@ -19,7 +19,7 @@ setup(
     url='https://github.com/cznewt/python-libmetric',
     install_requires=[
         'click',
-        'urllib3==1.21.1',
+        'urllib3==1.26.5',
         'requests',
         'pandas',
         'numpy',
