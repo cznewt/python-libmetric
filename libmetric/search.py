@@ -60,7 +60,7 @@ class PrometheusSearch(Search):
         return self.base_url + url
 
     def _process(self, response):
-        print response
+        print(response)
 
 
 class RrdSearch(Search):

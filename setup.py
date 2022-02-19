@@ -2,7 +2,7 @@
 
 from setuptools import setup, find_packages
 
-VERSION = '0.6.0'
+VERSION = '0.6.2'
 
 with open('README.rst') as readme:
     LONG_DESCRIPTION = ''.join(readme.readlines())
@@ -19,7 +19,7 @@ setup(
     url='https://github.com/cznewt/python-libmetric',
     install_requires=[
         'click',
-        'urllib3==1.21.1',
+        'urllib3',
         'requests',
         'pandas',
         'numpy',
@@ -27,10 +27,6 @@ setup(
     ],
     entry_points='''
 [console_scripts]
-search_metrics=libmetric.cli:search_metrics
-range_metric=libmetric.cli:range_metric
-instant_metric=libmetric.cli:instant_metric
-range_alarm=libmetric.cli:range_alarm
-instant_alarm=libmetric.cli:instant_alarm
+libmetric_query=libmetric.cli:libmetric_query
     ''',
 )

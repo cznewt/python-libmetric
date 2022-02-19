@@ -1,8 +1,8 @@
-FROM python:2.7-slim-jessie
+FROM python:3.9
 
 RUN apt-get update && apt-get -y install librrd-dev libpython-dev
 WORKDIR /code
 ADD . .
 RUN pip install .
 
-ENTRYPOINT ["range_alarm"]
+ENTRYPOINT ["libmetric_query"]

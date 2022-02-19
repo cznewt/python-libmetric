@@ -1,276 +1,176 @@
 #!/usr/bin/env python
 
 import click
-from libmetric.query_range import (InfluxRangeQuery, GraphiteRangeQuery,
-                                   PrometheusRangeQuery, RrdRangeQuery)
-from libmetric.query_instant import (InfluxInstantQuery, GraphiteInstantQuery,
-                                     PrometheusInstantQuery, RrdInstantQuery)
-from libmetric.search import (GraphiteSearch, PrometheusSearch, InfluxSearch,
-                              RrdSearch)
+
+from libmetric.engine.prometheus import PrometheusQuery
+from libmetric.engine.influxdb import InfluxdbQuery
+from libmetric.engine.graphite import GraphiteQuery
+
+from libmetric.search import GraphiteSearch, PrometheusSearch, InfluxSearch, RrdSearch
 from libmetric.alarm import RangeAlarm, InstantAlarm
 
 
 @click.command()
-@click.option('--engine', default='prometheus',
-              help="Engine [prometheus, elasticsearch, influxdb]")
-@click.option('--url', default=None,
-              help="Server URL")
-@click.option('--user', default=None,
-              help="Authentication username")
-@click.option('--password', default=None,
-              help="Authentication password")
-@click.option('--partition', default=None,
-              help="Data partition")
-@click.option('--query', default=None,
-              help="Time-series query")
-@click.option('--start', default=None,
-              help="Time range start")
-@click.option('--end', default=None,
-              help="Time range end")
-@click.option('--step', default=None,
-              help="Query resolution step width")
-def _range_metric(engine, url, user, password, partition, query,
-                  start, end, step):
-    data = {
-        'queries': [query],
-        'url': url,
-        'user': user,
-        'password': password,
-        'partition': partition,
-        'step': step,
-        'start': start,
-        'end': end
-    }
+@click.option(
+    "--engine", default="prometheus", help="Engine [prometheus, graphite, influxdb]"
+)
+@click.option("--url", default=None, help="Server URL")
+@click.option("--user", default=None, help="Authentication username")
+@click.option("--password", default=None, help="Authentication password")
+@click.option("--partition", default=None, help="Data partition")
+@click.option("--query", default=None, help="Time-series query")
+@click.option("--start", default=None, help="Time range start")
+@click.option("--end", default=None, help="Time range end")
+@click.option("--moment", default=None, help="Moment in time")
+@click.option("--step", default=None, help="Query resolution step width")
+def _libmetric_query(
+    engine, url, user, password, partition, query, start, end, moment, step
+):
 
-    if engine == 'prometheus':
-        query = PrometheusRangeQuery(**data)
-    elif engine == 'influxdb':
-        query = InfluxRangeQuery(**data)
-    elif engine == 'graphite':
-        query = GraphiteRangeQuery(**data)
-    elif engine == 'rrd':
-        query = RrdRangeQuery(**data)
+    data = {
+        "queries": [query],
+        "url": url,
+        "user": user,
+        "password": password,
+        "partition": partition,
+        "step": step,
+        "start": start,
+        "end": end,
+        "moment": moment,
+    }
+    print(data)
+
+    if engine == "prometheus":
+        query = PrometheusQuery(**data)
+    elif engine == "influxdb":
+        query = InfluxdbQuery(**data)
+    elif engine == "graphite":
+        query = GraphiteQuery(**data)
     else:
         raise Exception("Unsupported engine {}.".format(engine))
 
-    print query.get()
+    print(query.get())
 
 
-def range_metric():
-    _range_metric(auto_envvar_prefix='LIBMETRIC')
+def libmetric_query():
+    _libmetric_query(auto_envvar_prefix="LIBMETRIC")
 
 
 @click.command()
-@click.option('--engine', default='prometheus',
-              help="Engine [prometheus, elasticsearch, influxdb]")
-@click.option('--url', default=None,
-              help="Server URL")
-@click.option('--user', default=None,
-              help="Authentication username")
-@click.option('--password', default=None,
-              help="Authentication password")
-@click.option('--partition', default=None,
-              help="Data partition")
-@click.option('--query', default=None,
-              help="Time-series query")
-@click.option('--start', default=None,
-              help="Time range start")
-@click.option('--end', default=None,
-              help="Time range end")
-@click.option('--step', default=None,
-              help="Query resolution step width")
-@click.option('--alarm-threshold', default=None,
-              help="Threshold value for the alarm")
-@click.option('--alarm-operator', default=None,
-              help="Arithmetic operator for alarm evaluation")
-@click.option('--alarm-series', default=None,
-              help="Series to perform alarm against")
-@click.option('--aggregation', default=None,
-              help="Aggregation function for the given time-series")
-def _range_alarm(engine, url, user, password, partition, query, start, end,
-                 step, alarm_operator, alarm_threshold, alarm_series,
-                 aggregation):
+@click.option(
+    "--engine",
+    default="prometheus",
+    help="Engine [prometheus, elasticsearch, influxdb]",
+)
+@click.option("--url", default=None, help="Server URL")
+@click.option("--user", default=None, help="Authentication username")
+@click.option("--password", default=None, help="Authentication password")
+@click.option("--partition", default=None, help="Data partition")
+@click.option("--query", default=None, help="Time-series query")
+@click.option("--start", default=None, help="Time range start")
+@click.option("--end", default=None, help="Time range end")
+@click.option("--moment", default=None, help="Moment in time")
+@click.option("--step", default=None, help="Query resolution step width")
+@click.option("--alert-threshold", default=None, help="Threshold value for the alert")
+@click.option(
+    "--alert-operator", default=None, help="Arithmetic operator for alert evaluation"
+)
+@click.option("--alert-series", default=None, help="Series to perform alert against")
+@click.option(
+    "--aggregation", default=None, help="Aggregation function for the given time-series"
+)
+def _libmetric_alert(
+    engine,
+    url,
+    user,
+    password,
+    partition,
+    query,
+    start,
+    end,
+    moment,
+    step,
+    alert_operator,
+    alert_threshold,
+    alert_series,
+    aggregation,
+):
     data = {
-        'queries': [query],
-        'url': url,
-        'user': user,
-        'password': password,
-        'partition': partition,
-        'step': step,
-        'start': start,
-        'end': end
+        "queries": [query],
+        "url": url,
+        "user": user,
+        "password": password,
+        "partition": partition,
+        "step": step,
+        "start": start,
+        "end": end,
+        "moment": moment,
     }
 
-    if engine == 'prometheus':
+    if engine == "prometheus":
         query = PrometheusRangeQuery(**data)
-    elif engine == 'influxdb':
+    elif engine == "influxdb":
         query = InfluxRangeQuery(**data)
-    elif engine == 'graphite':
+    elif engine == "graphite":
         query = GraphiteRangeQuery(**data)
-    elif engine == 'rrd':
+    elif engine == "rrd":
         query = RrdRangeQuery(**data)
     else:
         raise Exception("Unsupported engine {}.".format(engine))
 
     data_frame = query.get()
     alarm = {
-        'alarm_operator': alarm_operator,
-        'alarm_threshold': alarm_threshold,
-        'aggregation': aggregation,
-        'series': alarm_series,
-        'data_frame': data_frame
+        "alarm_operator": alert_operator,
+        "alarm_threshold": alert_threshold,
+        "aggregation": aggregation,
+        "series": alert_series,
+        "data_frame": data_frame,
     }
     result = RangeAlarm(**alarm).evaluate()
-    print "Response: {}".format(result)
+    print("{}".format(result))
 
 
-def range_alarm():
-    _range_alarm(auto_envvar_prefix='LIBMETRIC')
-
-
-@click.command()
-@click.option('--engine', default='prometheus',
-              help="Engine [prometheus, elasticsearch, influxdb]")
-@click.option('--url', default=None,
-              help="Server URL")
-@click.option('--user', default=None,
-              help="Authentication username")
-@click.option('--password', default=None,
-              help="Authentication password")
-@click.option('--partition', default=None,
-              help="Data partition")
-@click.option('--query', default=None,
-              help="Time-series query")
-@click.option('--moment', default=None,
-              help="Moment in time")
-def _instant_metric(engine, url, user, password, partition, query, moment):
-    data = {
-        'queries': [query],
-        'url': url,
-        'user': user,
-        'password': password,
-        'partition': partition,
-        'moment': moment,
-    }
-
-    if engine == 'prometheus':
-        query = PrometheusInstantQuery(**data)
-    elif engine == 'influxdb':
-        query = InfluxInstantQuery(**data)
-    elif engine == 'graphite':
-        query = GraphiteInstantQuery(**data)
-    elif engine == 'rrd':
-        query = RrdInstantQuery(**data)
-    else:
-        raise Exception("Unsupported engine {}.".format(engine))
-
-    print query.get()
-
-
-def instant_metric():
-    _instant_metric(auto_envvar_prefix='LIBMETRIC')
+def libmetric_alert():
+    _libmetric_alert(auto_envvar_prefix="LIBMETRIC")
 
 
 @click.command()
-@click.option('--engine', default='prometheus',
-              help="Engine [prometheus, elasticsearch, influxdb]")
-@click.option('--url', default=None,
-              help="Server URL")
-@click.option('--user', default=None,
-              help="Authentication username")
-@click.option('--password', default=None,
-              help="Authentication password")
-@click.option('--partition', default=None,
-              help="Data partition")
-@click.option('--query', default=None,
-              help="Time-series query")
-@click.option('--moment', default=None,
-              help="Moment in time")
-@click.option('--alarm-threshold', default=None,
-              help="Threshold value for the alarm")
-@click.option('--alarm-operator', default=None,
-              help="Arithmetic operator for alarm evaluation")
-@click.option('--alarm-series', default=None,
-              help="Series to perform alarm against")
-def _instant_alarm(engine, url, user, password, partition, query, moment,
-                   alarm_operator, alarm_threshold, alarm_series):
+@click.option(
+    "--engine",
+    default="prometheus",
+    help="Engine [prometheus, elasticsearch, influxdb]",
+)
+@click.option("--url", default=None, help="Server URL")
+@click.option("--user", default=None, help="Authentication username")
+@click.option("--password", default=None, help="Authentication password")
+@click.option("--partition", default=None, help="Data partition")
+@click.option("--search", default=None, help="Search time-series")
+@click.option("--start", default=None, help="Time range start")
+@click.option("--end", default=None, help="Time range end")
+def _libmetric_metadata(engine, url, user, password, partition, search, start, end):
     data = {
-        'queries': [query],
-        'url': url,
-        'user': user,
-        'password': password,
-        'partition': partition,
-        'moment': moment,
+        "search": [search],
+        "url": url,
+        "user": user,
+        "password": password,
+        "partition": partition,
+        "start": start,
+        "end": end,
     }
 
-    if engine == 'prometheus':
-        query = PrometheusInstantQuery(**data)
-    elif engine == 'influxdb':
-        query = InfluxInstantQuery(**data)
-    elif engine == 'graphite':
-        query = GraphiteInstantQuery(**data)
-    elif engine == 'rrd':
-        query = RrdInstantQuery(**data)
-    else:
-        raise Exception("Unsupported engine {}.".format(engine))
-
-    data_frame = query.get()
-    alarm = {
-        'alarm_operator': alarm_operator,
-        'alarm_threshold': alarm_threshold,
-        'series': alarm_series,
-        'data_frame': data_frame
-    }
-    result = InstantAlarm(**alarm).evaluate()
-    print "Response: {}".format(result)
-
-
-def instant_alarm():
-    _instant_alarm(auto_envvar_prefix='LIBMETRIC')
-
-
-@click.command()
-@click.option('--engine', default='prometheus',
-              help="Engine [prometheus, elasticsearch, influxdb]")
-@click.option('--url', default=None,
-              help="Server URL")
-@click.option('--user', default=None,
-              help="Authentication username")
-@click.option('--password', default=None,
-              help="Authentication password")
-@click.option('--partition', default=None,
-              help="Data partition")
-@click.option('--search', default=None,
-              help="Search time-series")
-@click.option('--start', default=None,
-              help="Time range start")
-@click.option('--end', default=None,
-              help="Time range end")
-def _search_metrics(engine, url, user, password, partition, search,
-                    start, end):
-    data = {
-        'search': [search],
-        'url': url,
-        'user': user,
-        'password': password,
-        'partition': partition,
-        'start': start,
-        'end': end
-    }
-
-    if engine == 'prometheus':
+    if engine == "prometheus":
         search = PrometheusSearch(**data)
-    elif engine == 'influxdb':
+    elif engine == "influxdb":
         search = InfluxSearch(**data)
-    elif engine == 'graphite':
+    elif engine == "graphite":
         search = GraphiteSearch(**data)
-    elif engine == 'rrd':
+    elif engine == "rrd":
         search = RrdSearch(**data)
     else:
         raise Exception("Unsupported engine {}".format(engine))
 
-    print search.get()
+    print(search.get())
 
 
-def search_metrics():
-    _search_metrics(auto_envvar_prefix='LIBMETRIC')
+def libmetric_metadata():
+    _libmetric_metadata(auto_envvar_prefix="LIBMETRIC")
