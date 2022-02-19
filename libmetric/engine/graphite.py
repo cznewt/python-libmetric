@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import datetime
 from libmetric.query import Query, InstantQuery, RangeQuery
+from libmetric.search import Search
 
 
 class GraphiteQuery(Query):
@@ -53,5 +54,16 @@ class GraphiteInstantQuery(InstantQuery):
     def _url(self):
         params = ["from={}".format(self.start), "until={}".format(self.end)]
         params += ["target={}".format(query) for query in self.queries]
+        url = "/render?format=json&{}".format("&".join(params))
+        return self.base_url + url
+
+
+class GraphiteSearch(Search):
+    def __init__(self, **kwargs):
+        super(GraphiteSearch, self).__init__(**kwargs)
+
+    def _url(self):
+        params = ["from={}".format(self.start), "until={}".format(self.end)]
+        params += ["target={}".format(search) for search in self.search]
         url = "/render?format=json&{}".format("&".join(params))
         return self.base_url + url

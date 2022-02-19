@@ -54,7 +54,7 @@ And the example of passing parameters as command arguments.
 libmetric_query --engine prometheus --url 'https://metric01:9090' --query '...'
 ```
 
-## Common Parameters
+### Common Parameters
 
 **LIBMETRIC_ENGINE**
   Type of the endpoint to make query.
@@ -68,7 +68,7 @@ libmetric_query --engine prometheus --url 'https://metric01:9090' --query '...'
 **LIBMETRIC_QUERY**
   Query to get the metric time-series or value.
 
-## Range Parameters
+### Range Query Parameters
 
 Parameters that apply only for the `range` meters.
 
@@ -81,14 +81,14 @@ Parameters that apply only for the `range` meters.
 **LIBMETRIC_STEP**
   Query resolution step width.
 
-## Instant Parameters
+### Instant Query Parameters
 
 Parameters that apply only for the `intant` meters.
 
 **LIBMETRIC_MOMENT**
   Single moment in time.
 
-## Alarm Parameters
+### Alert Parameters
 
 Parameters that apply only for the all meters/alarms. Except the
 `LIBMETRIC_AGGREGATION`  ` is applicable only for `  `range` meters.
@@ -168,41 +168,6 @@ print(
   query.get()
 )
 ```
-
-## Alert Options
-
-Following lists show allowed values for alarm functions, the alarm arithmetic operators and aggregation function for `range` meters.
-
-### Supported Alert Operators
-
-**gt**
-  Greater than `>`.
-
-**gte**
-  Greater or equal than `>=`.
-
-**lt**
-  Lower than `<`.
-
-**lte**
-  Lower or equal than `<=`.
-
-**eq**
-  Equals to `==`.
-
-### Supported Time-series Aggregations
-
-**avg**
-  Arithmetic average of the series values.
-
-**min**
-  Use the minimal value from series.
-
-**max**
-  Use the maximal value from series.
-
-**sum**
-  Sum the values together.
 
 ## More Information
 

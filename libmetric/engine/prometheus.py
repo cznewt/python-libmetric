@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import datetime
 from libmetric.query import Query, InstantQuery, RangeQuery
+from libmetric.search import Search
 
 PROMETHEUS_REPLY = "Prometheus API replied with error {}: {}"
 
@@ -112,3 +113,19 @@ class PrometheusInstantQuery(InstantQuery):
             return pd.concat(series, axis=1, join="inner")
         else:
             return None
+
+
+class PrometheusSearch(Search):
+    def __init__(self, **kwargs):
+        super(PrometheusSearch, self).__init__(**kwargs)
+
+    def _url(self):
+        params = []
+        params += ["match[]={}".format(search) for search in self.search]
+        if self.start is not None:
+            params += ["start={}".format(self.start), "end={}".format(self.end)]
+        url = "/api/v1/series?" + "&".join(params)
+        return self.base_url + url
+
+    def _process(self, response):
+        print(response)

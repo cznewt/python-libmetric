@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import datetime
 from libmetric.query import Query, InstantQuery, RangeQuery
+from libmetric.search import Search
 
 
 class InfluxdbQuery(Query):
@@ -56,4 +57,17 @@ class InfluxdbInstantQuery(InstantQuery):
         if self.user is not None:
             params += ["u={}".format(self.user), "p={}".format(self.password)]
         url = "/query?db={}&epoch=s&{}".format(self.partition, "&".join(params))
+        return self.base_url + url
+
+
+class InfluxdbSearch(Search):
+    def __init__(self, **kwargs):
+        super(InfluxdbSearch, self).__init__(**kwargs)
+        self.partition = kwargs["partition"]
+
+    def _url(self):
+        params = ["q={}".format(search) for search in self.search]
+        if self.user is not None:
+            params += ["u={}".format(self.user), "p={}".format(self.password)]
+        url = "/search?db={}&epoch=s&{}".format(self.partition, "&".join(params))
         return self.base_url + url

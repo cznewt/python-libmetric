@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 VERSION = '0.6.2'
 
-with open('README.rst') as readme:
+with open('README.md') as readme:
     LONG_DESCRIPTION = ''.join(readme.readlines())
 
 setup(
