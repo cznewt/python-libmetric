@@ -9,10 +9,17 @@ urllib3.disable_warnings()
 
 class Query(object):
     def __init__(self, **kwargs):
-        pass
+        self._info = kwargs
 
-    def get(self):
-        return self.collector.get()
+
+    @property
+    def info(self):
+        return self._render_info()
+
+
+    @property
+    def data(self):
+        return self._collector.data()
 
 
 class InstantQuery(object):
@@ -30,7 +37,7 @@ class InstantQuery(object):
     def _url(self):
         raise NotImplementedError
 
-    def get(self):
+    def data(self):
         data = json.loads(requests.get(self._url(), verify=False).text)
         return self._process(data)
 
@@ -45,17 +52,6 @@ class InstantQuery(object):
                 self._url(), data=json.dumps(self._params()), verify=self.verify
             ).text
         )
-
-
-class GraphiteInstantQuery(InstantQuery):
-    def __init__(self, **kwargs):
-        super(GraphiteInstantQuery, self).__init__(**kwargs)
-
-    def _url(self):
-        params = ["from={}".format(self.start), "until={}".format(self.end)]
-        params += ["target={}".format(query) for query in self.queries]
-        url = "/render?format=json&{}".format("&".join(params))
-        return self.base_url + url
 
 
 class RangeQuery(object):

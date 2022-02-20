@@ -2,7 +2,7 @@
 
 from setuptools import setup, find_packages
 
-VERSION = '0.6.2'
+VERSION = '0.6.3'
 
 with open('README.md') as readme:
     LONG_DESCRIPTION = ''.join(readme.readlines())
@@ -19,6 +19,7 @@ setup(
     url='https://github.com/cznewt/python-libmetric',
     install_requires=[
         'click',
+        'Jinja2',
         'urllib3',
         'requests',
         'pandas',

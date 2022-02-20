@@ -11,7 +11,7 @@ class RrdRangeQuery(RangeQuery):
         super(RrdRangeQuery, self).__init__(**kwargs)
         self.url = kwargs["url"]
 
-    def get(self):
+    def data(self):
         result = rrdtool.fetch(self._url(), str(self.queries[0]))
 
         start, end, step = result[0]
@@ -29,7 +29,7 @@ class RrdInstantQuery(InstantQuery):
         super(RrdInstantQuery, self).__init__(**kwargs)
         self.url = kwargs["url"]
 
-    def get(self):
+    def data(self):
         data = json.loads(requests.get(self._url(), verify=False).text)
         return self._process(data)
 
@@ -41,7 +41,7 @@ class RrdSearch(Search):
     def _url(self):
         return str(self.base_url.replace("file://", ""))
 
-    def get(self):
+    def data(self):
         data_sources = set()
         info = rrdtool.info(self._url())
         for datum, real_value in info.items():

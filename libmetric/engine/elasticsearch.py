@@ -9,7 +9,7 @@ class ElasticSearchRangeQuery(RangeQuery):
     def __init__(self, **kwargs):
         super(ElasticSearchRangeQuery, self).__init__(**kwargs)
 
-    def get(self):
+    def data(self):
         data = self._http_get_data()
         return self._process(data)
 

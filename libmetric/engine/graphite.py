@@ -8,17 +8,20 @@ from libmetric.search import Search
 class GraphiteQuery(Query):
     def __init__(self, **kwargs):
         if kwargs.get("moment", None) == None:
-            self.collector = GraphiteRangeQuery(**kwargs)
+            self._collector = GraphiteRangeQuery(**kwargs)
         else:
-            self.collector = GraphiteInstantQuery(**kwargs)
+            self._collector = GraphiteInstantQuery(**kwargs)
         super(GraphiteQuery, self).__init__(**kwargs)
+
+    def _render_info(self):
+        return self._info
 
 
 class GraphiteRangeQuery(RangeQuery):
     def __init__(self, **kwargs):
         super(GraphiteRangeQuery, self).__init__(**kwargs)
 
-    def get(self):
+    def data(self):
         data = self._http_get_params()
         return self._process(data)
 

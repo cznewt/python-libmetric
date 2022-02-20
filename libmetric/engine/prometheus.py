@@ -9,18 +9,34 @@ PROMETHEUS_REPLY = "Prometheus API replied with error {}: {}"
 
 class PrometheusQuery(Query):
     def __init__(self, **kwargs):
+        kwargs["queries"] = [kwargs["query"]]
         if kwargs.get("moment", None) == None:
-            self.collector = PrometheusRangeQuery(**kwargs)
+            self._collector = PrometheusRangeQuery(**kwargs)
         else:
-            self.collector = PrometheusInstantQuery(**kwargs)
+            self._collector = PrometheusInstantQuery(**kwargs)
         super(PrometheusQuery, self).__init__(**kwargs)
+
+    def _render_info(self):
+        info = "Query info:\n".format(**self._info)
+        info += "  Server URL: {url}\n".format(**self._info)
+        if self._info.get("moment", None) == None:
+          info += "  Type: Range PromQL query\n".format(**self._info)
+        else:
+          info += "  Type: Instant PromQL query\n".format(**self._info)
+        info += "  Query: {query}\n".format(**self._info)        
+        if self._info.get("moment", None) == None:
+          info += "  Duration: {start} - {end}\n".format(**self._info)
+        else:
+          info += "  Moment: {moment}\n".format(**self._info)
+        info += "  Step: {step}\n".format(**self._info)
+        return info
 
 
 class PrometheusRangeQuery(RangeQuery):
     def __init__(self, **kwargs):
         super(PrometheusRangeQuery, self).__init__(**kwargs)
 
-    def get(self):
+    def data(self):
         data = self._http_get_params()
         return self._process(data)
 
@@ -75,7 +91,7 @@ class PrometheusInstantQuery(InstantQuery):
     def __init__(self, **kwargs):
         super(PrometheusInstantQuery, self).__init__(**kwargs)
 
-    def get(self):
+    def data(self):
         data = self._http_get_params()
         return self._process(data)
 

@@ -1,32 +1,42 @@
-
-
 from libmetric.engine.prometheus import PrometheusQuery
 import os
 
-query = os.getenv('LIBMETRIC_QUERY', 'node_load15')
-url = os.getenv('LIBMETRIC_URL', 'https://prometheus.monlab.newt.cz')
+url = os.getenv("LIBMETRIC_URL", "https://prometheus.monlab.newt.cz")
 
-data = {
-    'queries': [query],
-    'url': url,
-    'step': 60,
-    'start': 1645173343,
-    'end': 1645194943
-}
+query = PrometheusQuery(
+    **{
+        "query": "node_load15",
+        "url": url,
+        "step": 60,
+        "start": 1645173343,
+        "end": 1645194943,
+    }
+)
 
-query = PrometheusQuery(**data)
+print(query.info)
+print(query.data)
 
-print(data)
-print(query.get())
+query = PrometheusQuery(
+    **{
+        "query": "node_load15",
+        "url": url,
+        "step": 120,
+        "start": 1645173343,
+        "end": 1645194943,
+    }
+)
 
-data = {
-    'queries': [query],
-    'url': url,
-    'step': 60,
-    'moment': 1645173343,
-}
+print(query.info)
+print(query.data)
 
-query = PrometheusQuery(**data)
+query = PrometheusQuery(
+    **{
+        "query": "node_load15",
+        "url": url,
+        "step": 60,
+        "moment": 1645173343,
+    }
+)
 
-print(data)
-print(query.get())
+print(query.info)
+print(query.data)

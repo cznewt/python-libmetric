@@ -8,10 +8,13 @@ from libmetric.search import Search
 class InfluxdbQuery(Query):
     def __init__(self, **kwargs):
         if kwargs.get("moment", None) == None:
-            self.collector = InfluxdbRangeQuery(**kwargs)
+            self._collector = InfluxdbRangeQuery(**kwargs)
         else:
-            self.collector = InfluxdbInstantQuery(**kwargs)
+            self._collector = InfluxdbInstantQuery(**kwargs)
         super(InfluxdbQuery, self).__init__(**kwargs)
+
+    def _render_info(self):
+        return self._info
 
 
 class InfluxdbRangeQuery(RangeQuery):
@@ -19,7 +22,7 @@ class InfluxdbRangeQuery(RangeQuery):
         super(InfluxdbRangeQuery, self).__init__(**kwargs)
         self.partition = kwargs["partition"]
 
-    def get(self):
+    def data(self):
         data = self._http_get_params()
         return self._process(data)
 
