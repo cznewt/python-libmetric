@@ -68,7 +68,7 @@ class PrometheusRangeQuery(RangeQuery):
 
         title_list = []
         for key, value in series["metric"].items():
-            title_list.append(f'{key}="{value}"')
+            title_list.append(f'{key}={value}')
         title = "{" + ",".join(title_list) + "}"
 
         np_data = [
@@ -117,7 +117,7 @@ class PrometheusInstantQuery(InstantQuery):
 
         title_list = []
         for key, value in series["metric"].items():
-            title_list.append(f'{key}="{value}"')
+            title_list.append(f'{key}={value}')
         title = "{" + ",".join(title_list) + "}"
 
         np_data = [
