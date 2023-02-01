@@ -65,15 +65,14 @@ class PrometheusRangeQuery(RangeQuery):
             for values in series["values"]:
                 values[0] = pd.Timestamp(datetime.datetime.fromtimestamp(values[0]))
                 values[1] = float(values[1])
-
-        title_list = []
-        for key, value in series["metric"].items():
-            title_list.append(f'{key}={value}')
-        title = "{" + ",".join(title_list) + "}"
+            title_list = []
+            for key, value in series["metric"].items():
+                title_list.append(f"{key}={value}")
+            series["header"] = "{" + ",".join(title_list) + "}"
 
         np_data = [
             (
-                title,
+                series["header"],
                 np.array(series["values"]),
             )
             for series in data
@@ -115,14 +114,14 @@ class PrometheusInstantQuery(InstantQuery):
                 values[0] = pd.Timestamp(datetime.datetime.fromtimestamp(values[0]))
                 values[1] = float(values[1])
 
-        title_list = []
-        for key, value in series["metric"].items():
-            title_list.append(f'{key}={value}')
-        title = "{" + ",".join(title_list) + "}"
+            title_list = []
+            for key, value in series["metric"].items():
+                title_list.append(f"{key}={value}")
+            series["header"] = "{" + ",".join(title_list) + "}"
 
         np_data = [
             (
-                title_list,
+                series["header"],
                 np.array([series["value"]]),
             )
             for series in data
