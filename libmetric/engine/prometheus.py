@@ -20,14 +20,14 @@ class PrometheusQuery(Query):
         info = "Query info:\n".format(**self._info)
         info += "  Server URL: {url}\n".format(**self._info)
         if self._info.get("moment", None) == None:
-          info += "  Type: Range PromQL query\n".format(**self._info)
+            info += "  Type: Range PromQL query\n".format(**self._info)
         else:
-          info += "  Type: Instant PromQL query\n".format(**self._info)
-        info += "  Query: {query}\n".format(**self._info)        
+            info += "  Type: Instant PromQL query\n".format(**self._info)
+        info += "  Query: {query}\n".format(**self._info)
         if self._info.get("moment", None) == None:
-          info += "  Duration: {start} - {end}\n".format(**self._info)
+            info += "  Duration: {start} - {end}\n".format(**self._info)
         else:
-          info += "  Moment: {moment}\n".format(**self._info)
+            info += "  Moment: {moment}\n".format(**self._info)
         info += "  Step: {step}\n".format(**self._info)
         return info
 
@@ -66,12 +66,14 @@ class PrometheusRangeQuery(RangeQuery):
                 values[0] = pd.Timestamp(datetime.datetime.fromtimestamp(values[0]))
                 values[1] = float(values[1])
 
+        title_list = []
+        for key, value in series["metric"].items():
+            title_list.append(f'{key}="{value}"')
+        title = "{" + ",".join(title_list) + "}"
+
         np_data = [
             (
-                "{}_{}".format(
-                    series["metric"].get("__name__", "name"),
-                    series["metric"].get("instance", "instance"),
-                ),
+                title,
                 np.array(series["values"]),
             )
             for series in data
@@ -112,11 +114,15 @@ class PrometheusInstantQuery(InstantQuery):
             for values in [series["value"]]:
                 values[0] = pd.Timestamp(datetime.datetime.fromtimestamp(values[0]))
                 values[1] = float(values[1])
+
+        title_list = []
+        for key, value in series["metric"].items():
+            title_list.append(f'{key}="{value}"')
+        title = "{" + ",".join(title_list) + "}"
+
         np_data = [
             (
-                "{}_{}".format(
-                    series["metric"]["__name__"], series["metric"]["instance"]
-                ),
+                title_list,
                 np.array([series["value"]]),
             )
             for series in data

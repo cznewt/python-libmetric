@@ -11,11 +11,9 @@ class Query(object):
     def __init__(self, **kwargs):
         self._info = kwargs
 
-
     @property
     def info(self):
         return self._render_info()
-
 
     @property
     def data(self):
